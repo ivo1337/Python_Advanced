@@ -1,7 +1,7 @@
 import openai
 import tkinter as tk
 
-openai.api_key = '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'
+openai.api_key = ''
 
 
 def get_image_url():
