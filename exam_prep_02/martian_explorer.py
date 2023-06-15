@@ -1,41 +1,50 @@
-SIZE = 6
+SIZE = int(input())
+racing_number = input()
+matrix, tunnel, row, col, kilometers = [], [], 0, 0, 0
 
+for row_ in range(SIZE):
+    matrix.append(input().split())
 
-deposit = {"W": ["Water", 0], "M": ["Metal", 0], "C": ["Concrete", 0]}
-directions = {
-    "up": lambda r, c: [(r - 1) % SIZE, c],
-    "down": lambda r, c: [(r + 1) % SIZE, c],
-    "left": lambda r, c: [r, (c - 1) % SIZE],
-    "right": lambda r, c: [r, (c + 1) % SIZE],
-}
+    if "T" in matrix[row_]:
+        tunnel.append([row_, matrix[row_].index("T")])
 
-mars = []
-rover_pos = []
+command = input()
 
-for row in range(SIZE):
-    current_row = input().split()
+while command != "End":
 
-    if "E" in current_row:
-        rover_pos = [row, current_row.index("E")]
+    if command == "up":
+        row -= 1
+    elif command == "down":
+        row += 1
 
-    mars.append(current_row)
+    elif command == "left":
+        col -= 1
+    elif command == "right":
+        col += 1
 
-commands = input().split(", ")
+    step_on = matrix[row][col]
 
-for command in commands:
-    rover_pos = directions[command](*rover_pos)
-    position = mars[rover_pos[0]][rover_pos[1]]
+    if step_on == ".":
+        kilometers += 10
 
-    if position in deposit:
-        print(f"{deposit[position][0]} deposit found at ({rover_pos[0]}, {rover_pos[1]})")
+    elif step_on == "T":
+        kilometers += 30
+        matrix[row][col] = "."
+        tunnel.remove([row, col])
+        row, col = tunnel[0]
+        matrix[row][col] = "."
 
-        deposit[position][1] += 1
-
-    elif position == "R":
-        print(f"Rover got broken at ({rover_pos[0]}, {rover_pos[1]})")
+    elif step_on == "F":
+        kilometers += 10
+        print(f"Racing car {racing_number} finished the stage!")
         break
 
-if all([deposit["W"][1], deposit["M"][1], deposit["C"][1]]):
-    print("Area suitable to start the colony.")
+    command = input()
+
 else:
-    print("Area not suitable to start the colony.")
+    print(f"Racing car {racing_number} DNF.")
+
+matrix[row][col] = "C"
+
+print(f"Distance covered {kilometers} km.")
+[print(*row, sep="") for row in matrix]
